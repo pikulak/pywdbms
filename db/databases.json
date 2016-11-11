@@ -1,0 +1,10 @@
+{
+    "short_db_name": {
+        "database": "test", 
+        "drivername": "postgresql+psycopg2", 
+        "host": "192.168.1.104", 
+        "password": "test", 
+        "port": 5432, 
+        "username": "test"
+    }
+}

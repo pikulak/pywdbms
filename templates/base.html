@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    {% block head %}
+    <title>{% block title %}Dashboard{% endblock %} - pyWDBMS - Python-based Web DBMS</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    {% endblock %}
+    <style>
+
+    * {
+
+        border-radius: 0px !important;
+    }
+    .middle {
+        width: calc(100vw - 34px);
+    }
+    a {
+        text-decoration: none !important;
+    }
+    .np{
+        padding: 0;
+    }
+    .nm{
+        margin: 0;
+    }
+    .bg-dark-blue{
+        background: #4285F4
+    }
+    .bg-light-blue{
+        background: #4285F4
+    }
+    .white-color{
+        color: white;
+    }
+    .black-color{
+        color: black;
+    }
+    .inspect{
+        border: solid;
+    }
+    .nav-container{
+        box-shadow: 0 4px 2px -3px;
+    }
+    .nav-link{
+        font-size: 15px;
+        color: white;
+    }
+    .nav-link:hover, .nav-link:focus{
+        background: inherit !important;
+        color: white !important;
+    }
+    .navbar-brand{
+        margin-right: 50px;
+        font-size: 25px;
+    }
+    .navbar-brand:hover{
+        color:white;
+    }
+    .db{
+        font-size: 15px;
+
+        color:white;
+    }
+    .db:hover, .db:focus{
+        color:white;
+    }
+    .list-group-item{
+        word-wrap: break-word;
+        padding:5px;
+    }
+    .hash-char{
+        color: #ff4444;
+        font-size: 17px;
+    }
+    </style>
+</head>
+<body>
+{% block nav %}
+    <div class="container-fluid np nav-container">
+        <nav class="navbar navbar-light bg-dark-blue nm">
+            <a class="navbar-brand white-color" href="/">pyWDBMS</a>
+            <ul class="nav navbar-nav">
+                {% for host in hosts %}
+                <li class="nav-item active">
+                    <a class="nav-link" href="servers/{{host}}">
+                        <i class="fa fa-server"></i>
+                         {{host}}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </nav>
+    </div>
+{% endblock %}
+{% block content %}
+    <div class="container-fluid middle black-color np nm" style="margin-top:4px;">
+        <div class="col-md-2 np">
+            <div class="container-fluid np">
+            {% block sidebar %}
+                {% for database in databases %}
+                    {% set shortname = to_list(database.keys())[0] %}
+                    {% set db_properties = to_list(database.values())[0] %}
+                <a href="#" class="db">
+                    <div class="col-md-12 bg-light-blue" style="padding:10px">
+                        <i class="fa fa-database"></i>
+                         {{ shortname }}
+                         <span class="hash-char">#</span>
+                         {{ db_properties.username }}
+                    </div>
+                </a>
+                <div class="col-md-12 np">
+                    <ul class="list-group">
+                    {% for table_name in get_table_names(shortname) %}
+                        <li class="list-group-item">
+                            <a href="/servers/{{ db_properties.host }}/tables/{{ table_name }}" class="black-color">
+                                <i class="fa fa-table"></i>
+                                {{ table_name }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </div>
+                {% endfor %}
+            {% endblock %}
+            </div>
+        </div>
+
+        <div class="col-md-10">
+            <div class="container-fluid">
+            {% block database_content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+</body>
+</html>
