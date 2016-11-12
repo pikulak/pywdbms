@@ -5,8 +5,8 @@ def custom_dict_filter(d, conditions):
 	return True
 
 ####tests####
-first = {"host": "192.168.1.104",
-		 "port": 5432}
-second = {"host": "192.168.1.104"}
-
-print(custom_dict_filter(first, second))
+#first = {"host": "192.168.1.104",
+#		 "port": 5432}
+#second = {"host": "192.168.1.104"}
+#
+#print(custom_dict_filter(first, second))

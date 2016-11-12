@@ -16,6 +16,7 @@
     * {
 
         border-radius: 0px !important;
+        word-wrap: break-word !important;
     }
     .middle {
         width: calc(100vw - 34px);
@@ -29,6 +30,11 @@
     .nm{
         margin: 0;
     }
+
+    .wordwrap{
+        word-wrap: break-word;
+    }
+    
     .bg-dark-blue{
         background: #4285F4
     }
@@ -78,6 +84,13 @@
         color: #ff4444;
         font-size: 17px;
     }
+
+    .database-content{
+        margin-left: 8px;
+        border: 1px solid #ddd;
+        box-shadow: 0 1px 2px rgba(0,0,0,.075)
+    }
+
     </style>
 </head>
 <body>
@@ -99,26 +112,27 @@
     </div>
 {% endblock %}
 {% block content %}
-    <div class="container-fluid middle black-color np nm" style="margin-top:4px;">
+    <div class="container-fluid black-color np nm" style="margin-top:4px;">
         <div class="col-md-2 np">
             <div class="container-fluid np">
             {% block sidebar %}
                 {% for database in databases %}
                     {% set shortname = to_list(database.keys())[0] %}
                     {% set db_properties = to_list(database.values())[0] %}
-                <a href="#" class="db">
+                <a href="/servers/{{ db_properties.host }}/databases/{{ shortname }}" class="db">
                     <div class="col-md-12 bg-light-blue" style="padding:10px">
                         <i class="fa fa-database"></i>
-                         {{ shortname }}
-                         <span class="hash-char">#</span>
-                         {{ db_properties.username }}
+                         {{ db_properties.database }}
+                         ({{ shortname }})
+                         as 
+                         <span class="hash-char">{{ db_properties.username }}</span>
                     </div>
                 </a>
                 <div class="col-md-12 np">
                     <ul class="list-group">
                     {% for table_name in get_table_names(shortname) %}
                         <li class="list-group-item">
-                            <a href="/servers/{{ db_properties.host }}/tables/{{ table_name }}" class="black-color">
+                            <a href="/servers/{{ db_properties.host }}/databases/{{ shortname }}/tables/{{ table_name }}" class="black-color">
                                 <i class="fa fa-table"></i>
                                 {{ table_name }}
                             </a>
@@ -131,9 +145,34 @@
             </div>
         </div>
 
-        <div class="col-md-10">
-            <div class="container-fluid">
-            {% block database_content %}{% endblock %}
+        <div class="col-md-10 np">
+            <div class="container-fluid np">
+                <nav class="navbar navbar-light bg-dark-blue nm np second-nav" style="min-height: 0px !important">
+                    <ul class="nav navbar-nav">
+                    {% block database_bar %}
+                        <li class="nav-item active">
+                            <a class="nav-link" href="/servers/{{ host }}/databases/query " style="line-height: 12px;">
+                            Query
+                            </a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="/servers/{{ host }}/databases/query " style="line-height: 12px;">
+                            Query
+                            </a>
+                        </li>
+                    {% endblock%}
+                    </ul>
+                </nav>
+            </div>
+            <div class="container-fluid np nm database-content">
+                <div class="container-fluid">
+                {% block results %}
+                    <h2>SERVER DASHBOARD</h2>
+                    <p>
+                        "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehender/div>
+                    </p>
+                {% endblock %}
+                </div>
             </div>
         </div>
     </div>
