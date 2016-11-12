@@ -8,3 +8,4 @@ Python-based Web Database Management System written in flask
 In progress:
 * 70% back-end
 * 30% front-end
+* 0% security tweaks
