@@ -12,7 +12,6 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     {% endblock %}
     <style>
-
     * {
 
         border-radius: 0px !important;
@@ -24,13 +23,38 @@
     a {
         text-decoration: none !important;
     }
+    table{
+        table-layout: fixed;
+        width: 100%
+    }
+    td{
+        text-align: center;
+    }
+    th{
+        text-align: center;
+    }
+    th+th {
+        width: auto;
+    }
+    th p{
+        font-weight: 400;
+        font-size:11px;
+    }
     .np{
         padding: 0;
     }
     .nm{
         margin: 0;
     }
-
+    .np-i{
+        padding: 0 !important;
+    }
+    .nm-i{
+        margin: 0 !important;
+    }
+    .lp-i{
+        padding: 3px !important;
+    }
     .wordwrap{
         word-wrap: break-word;
     }
@@ -45,7 +69,7 @@
         color: white;
     }
     .black-color{
-        color: black;
+        color: black !important;
     }
     .inspect{
         border: solid;
@@ -101,7 +125,7 @@
             <ul class="nav navbar-nav">
                 {% for host in hosts %}
                 <li class="nav-item active">
-                    <a class="nav-link" href="servers/{{host}}">
+                    <a class="nav-link" href="/servers/{{host}}">
                         <i class="fa fa-server"></i>
                          {{host}}
                     </a>
@@ -131,12 +155,11 @@
                 <div class="col-md-12 np">
                     <ul class="list-group">
                     {% for table_name in get_table_names(shortname) %}
-                        <li class="list-group-item">
-                            <a href="/servers/{{ db_properties.host }}/databases/{{ shortname }}/tables/{{ table_name }}" class="black-color">
-                                <i class="fa fa-table"></i>
-                                {{ table_name }}
-                            </a>
-                        </li>
+                        <a href="/servers/{{ db_properties.host }}/databases/{{ shortname }}/tables/{{ table_name }}" class="list-group-item black-color">
+                            <i class="fa fa-table"></i>
+                            {{ table_name }}
+                        </a>
+                        
                     {% endfor %}
                     </ul>
                 </div>

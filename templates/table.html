@@ -1,5 +1,45 @@
 {% extends 'base.html' %}
 
 {% block results %}
+	<h4 class="np">Table: {{ table_name }}</h4>
+	<div class="container-fluid np nm">
+		<div class="col-md-1 np">
+			{% if prev %}
+				<h4>
+					<a href="{{ table_url }}/{{offset}}/{{prev}}">
+						Previous
+					</a>
+				</h4>
+			{% endif%}
+		</div>
 
+		<div class="col-md-1">
+			{% if next %}
+				<h4>
+					<a href="{{ table_url }}/{{offset}}/{{next}}">
+						Next
+					</a>
+				</h4>
+			{% endif %}
+		</div>
+	</div>
+	<table class="table table-bordered table-hover table-responsive table-condensed">
+		<tr>
+			{% for key in keys %}
+				<th>
+				{{key}}
+				<p>{{types[loop.index-1]}}</p>
+				</th>
+			{% endfor %}
+		</tr>
+		{% for row in rows %}
+			<tr>
+				{% for cell in row %}
+					<td class="lp-i">
+						{{ cell }}
+					</td>
+				{% endfor %}
+			</tr>
+		{% endfor %}
+	</table>
 {% endblock %}
