@@ -1,5 +1,45 @@
 {% extends 'base.html' %}
 
+{% block database_bar %}
+    <li class="nav-item active">
+        <a class="nav-link d_b" href="{{ table_url }}">
+        	<i class="fa fa-table" aria-hidden="true"></i>
+            Browse
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link d_b" href="{{ table_url }}/structure">
+        	<i class="fa fa-columns" aria-hidden="true"></i>
+            Structure
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link d_b" href="{{ table_url }}/query">
+        	<i class="fa fa-magic" aria-hidden="true"></i>
+            SQL
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link d_b" href="{{ table_url }}/search">
+        	<i class="fa fa-search" aria-hidden="true"></i>
+            Search
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link d_b" href="{{ table_url }}/export">
+        	<i class="fa fa-download"></i>
+             Export
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link d_b" href="{{ table_url }}/import">
+        	<i class="fa fa-upload" aria-hidden="true"></i>
+            Import
+        </a>
+    </li>
+{% endblock %}
+
+
 {% block results %}
 	<h4 class="np">Table: {{ table_name }}</h4>
 	<div class="container-fluid np nm">

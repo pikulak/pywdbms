@@ -52,6 +52,9 @@
     .nm-i{
         margin: 0 !important;
     }
+    .d_b{
+        padding: 11px !important;
+    }
     .lp-i{
         padding: 3px !important;
     }
@@ -74,9 +77,14 @@
     .inspect{
         border: solid;
     }
+    .navbar{
+        border: none !important;
+    }
+    /*
     .nav-container{
         box-shadow: 0 4px 2px -3px;
     }
+    */
     .nav-link{
         font-size: 15px;
         color: white;
@@ -108,7 +116,17 @@
         color: #ff4444;
         font-size: 17px;
     }
-
+    .active {
+        background: #fff;
+    }
+    .active a{
+        color:#4285F4 !important;
+        font-weight: 600;
+    }
+    .active a:hover{
+        color:#4285F4 !important;
+        font-weight: 600;
+    }
     .database-content{
         margin-left: 8px;
         border: 1px solid #ddd;
@@ -120,7 +138,7 @@
 <body>
 {% block nav %}
     <div class="container-fluid np nav-container">
-        <nav class="navbar navbar-light bg-dark-blue nm">
+        <nav class="navbar navbar-light bg-dark-blue nm np">
             <a class="navbar-brand white-color" href="/">pyWDBMS</a>
             <ul class="nav navbar-nav">
                 {% for host in hosts %}
@@ -173,14 +191,9 @@
                 <nav class="navbar navbar-light bg-dark-blue nm np second-nav" style="min-height: 0px !important">
                     <ul class="nav navbar-nav">
                     {% block database_bar %}
-                        <li class="nav-item active">
-                            <a class="nav-link" href="/servers/{{ host }}/databases/query " style="line-height: 12px;">
-                            Query
-                            </a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link" href="/servers/{{ host }}/databases/query " style="line-height: 12px;">
-                            Query
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ table_url }} " style="line-height: 12px;">
+                                Query
                             </a>
                         </li>
                     {% endblock%}
