@@ -4,12 +4,12 @@ class StatementsBaseAbstract(metaclass=abc.ABCMeta):
     @staticmethod
     @abc.abstractmethod
     def get_database_encoding(database):
-        raise NotImplementedError('You must define get_server_encoding method')
+        raise NotImplementedError('You must define get_database_encoding method')
 
     @staticmethod
     @abc.abstractmethod
     def get_server_version():
-        raise NotImplementedError('You must define get_server_encoding method')
+        raise NotImplementedError('You must define get_server_version method')
 
 class PostgresqlStatements(StatementsBaseAbstract):
 
