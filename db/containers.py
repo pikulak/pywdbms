@@ -3,7 +3,7 @@ from sqlalchemy.engine import url
 from sqlalchemy.schema import MetaData
 from sqlalchemy import create_engine
 from pywdbms.utils.custom_dict_filter import custom_dict_filter as c_d_f
-
+from pywdbms.db.statements import StatementsChooser
 
 class DatabaseContainer(object):
 	DATABASES = {}
@@ -69,7 +69,9 @@ class BindContainer(object):
 		_meta = MetaData()
 		_meta.reflect(bind=_engine, autoload=True)
 		_BINDS = getattr(BindContainer, "BINDS")
-		_BINDS[shortname] = (_connection, _meta)
+		_BINDS[shortname] = (_connection,
+							 _meta, 
+							 StatementsChooser.for_[_db_properties["drivername"]])
 		setattr(BindContainer, "BINDS", _BINDS)
 
 	@staticmethod
