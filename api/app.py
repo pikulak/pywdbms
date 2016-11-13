@@ -46,7 +46,7 @@ def table_view(host, shortname, table_name, offset=None, page=None):
             page = int(page)
         except ValueError:
             page = 1
-            
+
     if page <= 0:
         page = 1
     if page -1 <= 0:
@@ -96,9 +96,32 @@ def utility_processor():
     def to_dict(input):
         return dict(input)
 
+    def generate_db_nav_items(active, url):
+        items = ["Browse", "Structure", "SQL", "Expart", "Import"]
+        icons = ["fa fa-table",
+                 "fa fa-columns",
+                 "fa fa-magic", 
+                 "fa fa-search", 
+                 "fa fa-download", 
+                 "fa fa-upload"]
+        ret = ""
+        for i, item in enumerate(items):
+            if item == active:
+                ret += '<li class="nav-item active">'
+            else:
+                ret += '<li class="nav-item">'
+            ret += '<a class="nav-link d_b" href="{}">'.format(url)
+            ret += '<i class="{}" aria-hidden="true"></i>'.format(icons[i])
+            ret += " "
+            ret += item
+            ret += '</a>'
+            ret += '</li>'
+        return ret
+
     return dict(to_dict=to_dict,
                 get_table_names=get_table_names,
-                to_list=to_list)
+                to_list=to_list,
+                generate_db_nav_items=generate_db_nav_items)
 
 @blueprint.context_processor
 def hosts():
