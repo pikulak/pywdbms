@@ -96,14 +96,16 @@ def utility_processor():
     def to_dict(input):
         return dict(input)
 
-    def generate_db_nav_items(active, url):
-        items = ["Browse", "Structure", "SQL", "Expart", "Import"]
-        icons = ["fa fa-table",
-                 "fa fa-columns",
-                 "fa fa-magic", 
-                 "fa fa-search", 
-                 "fa fa-download", 
-                 "fa fa-upload"]
+    def generate_db_nav_items(active, url, type_):
+        if type_ == "database":
+            items = ["STRUCTURE", "SQL", "SEARCH", "EKSPORT", "IMPORT", "OPERATIONS"]
+            icons = ["columns", "magic", "search", "download", "upload", "cogs"]
+        if type_ == "server":
+            items = ["DATABASES", "SQL", "USERS", "EKSPORT", "IMPORT", "OPERATIONS"]
+            icons = ["database", "magic", "user", "download", "upload", "cogs"]
+        if type_ == "table":
+            items = ["BROWSE", "STRUCTURE", "SQL", "SEARCH", "ADD", "EXPORT", "IMPORT"]
+            icons = ["table", "columns", "magic", "search", "plus", "download", "upload"]
         ret = ""
         for i, item in enumerate(items):
             if item == active:
@@ -111,7 +113,7 @@ def utility_processor():
             else:
                 ret += '<li class="nav-item">'
             ret += '<a class="nav-link d_b" href="{}">'.format(url)
-            ret += '<i class="{}" aria-hidden="true"></i>'.format(icons[i])
+            ret += '<i class="fa fa-{}" aria-hidden="true"></i>'.format(icons[i])
             ret += " "
             ret += item
             ret += '</a>'
