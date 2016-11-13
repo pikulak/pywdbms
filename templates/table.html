@@ -46,7 +46,7 @@
 		<div class="col-md-1 np">
 			{% if prev %}
 				<h4>
-					<a href="{{ table_url }}/{{offset}}/{{prev}}">
+					<a href="{{ table_url }}/?offset={{ offset }}&page={{ prev }}">
 						Previous
 					</a>
 				</h4>
@@ -56,7 +56,7 @@
 		<div class="col-md-1">
 			{% if next %}
 				<h4>
-					<a href="{{ table_url }}/{{offset}}/{{next}}">
+					<a href="{{ table_url }}/?offset={{ offset }}&page={{ next }}">
 						Next
 					</a>
 				</h4>

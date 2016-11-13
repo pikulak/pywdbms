@@ -26,33 +26,48 @@ def server_view(host):
                         databases=databases, 
                         binds=BindContainer.BINDS), 200)
 
-
-@blueprint.route('/servers/<host>/databases/<shortname>/tables/<table_name>/<offset>/<page>')
-@blueprint.route('/servers/<host>/databases/<shortname>/tables/<table_name>/')
+@blueprint.route('/servers/<string:host>/databases/<string:shortname>/tables/<string:table_name>/')
 def table_view(host, shortname, table_name, offset=None, page=None):
+    offset = request.args.get("offset")
+    page = request.args.get("page")
+
     if offset is None:
         offset = default_offset
+    else:
+        try:
+            offset = int(offset)
+        except ValueError:
+            offset = default_offset
+
     if page is None:
         page = 1
-
-    table_url = "/servers/{}/databases/{}/tables/{}".format(host, shortname, table_name)
-    if int(page) <= 0:
+    else:
+        try:
+            page = int(page)
+        except ValueError:
+            page = 1
+            
+    if page <= 0:
         page = 1
-    if int(page) -1 <= 0:
+    if page -1 <= 0:
         prev_ = False
     else:
-        prev_ = int(page) - 1
-    offset_ = (int(offset) * int(page)) - int(offset)
+        prev_ = page - 1
+
+    table_url = "/servers/{}/databases/{}/tables/{}".format(host, shortname, table_name)
+    offset_ = (offset * page) - offset
     databases = DatabaseContainer.get_databases(host=host)
-    connection, meta = BindContainer.get(shortname)
+    connection, meta, _ = BindContainer.get(shortname)
     table = meta.tables[table_name]
     result = connection.execute(table.select().limit(offset).offset(offset_))
     rows = result.fetchall()
     types = [col.type for col in result.context.compiled.statement.columns]
-    if len(rows) < int(offset):
+
+    if len(rows) < offset:
         next_ = False
     else:
-        next_ = int(page) + 1
+        next_ = page + 1
+
     return make_response(render_template(
                         'table.html',
                         databases=databases,
@@ -72,7 +87,7 @@ def table_view(host, shortname, table_name, offset=None, page=None):
 @blueprint.context_processor
 def utility_processor():
     def get_table_names(shortname):
-        _, meta = BindContainer.get(shortname)
+        _, meta, _useless = BindContainer.get(shortname)
         return meta.sorted_tables
 
     def to_list(input):
