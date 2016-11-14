@@ -13,6 +13,8 @@ blueprint = Blueprint('blueprint', __name__, template_folder="../templates")
 load()
 BindContainer.add("short_db_name")
 default_offset = 25
+
+
 @blueprint.route('/')
 def dashboard():
     resp = make_response(render_template('dashboard.html'), 200)
@@ -25,10 +27,15 @@ def server_view(host):
                         'server.html',
                         binds=BindContainer.BINDS,
                         host=host), 200)
+
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/')
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/browse/')
 def database_view(host, shortname):
     connection, meta, _ = BindContainer.get(shortname)
+    return make_response(render_template(
+                        'tables.html',
+                        binds=BindContainer.BINDS,
+                        host=host), 200)
 
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/tables/<string:table_name>/')
@@ -74,7 +81,7 @@ def table_view(host, shortname, table_name, offset=None, page=None):
         next_ = page + 1
 
     return make_response(render_template(
-                        'table.html',
+                        'table/browse.html',
                         table_name=table_name,
                         keys=result.keys(),
                         rows=rows,
@@ -106,10 +113,10 @@ def utility_processor():
         return databases
     def generate_db_nav_items(active, url, type_):
         if type_ == "database":
-            items = ["STRUCTURE", "SQL", "SEARCH", "EKSPORT", "IMPORT", "OPERATIONS"]
+            items = ["STRUCTURE", "SQL", "SEARCH", "EXPORT", "IMPORT", "OPERATIONS"]
             icons = ["columns", "magic", "search", "download", "upload", "cogs"]
         if type_ == "server":
-            items = ["DATABASES", "SQL", "USERS", "EKSPORT", "IMPORT", "OPERATIONS"]
+            items = ["DATABASES", "SQL", "USERS", "EXPORT", "IMPORT", "OPERATIONS"]
             icons = ["database", "magic", "user", "download", "upload", "cogs"]
         if type_ == "table":
             items = ["BROWSE", "STRUCTURE", "SQL", "SEARCH", "ADD", "EXPORT", "IMPORT"]
