@@ -20,13 +20,57 @@ def dashboard():
     resp = make_response(render_template('dashboard/main.html'), 200)
     return resp
 
-@blueprint.route('/servers/<string:host>')
-@blueprint.route('/servers/<string:host>/databases')
+##############################
+########SERVER ROUTE##########
+##############################
+
+@blueprint.route('/servers/<string:host>/')
+@blueprint.route('/servers/<string:host>/databases/')
 def server_view_databases(host):
     return make_response(render_template(
                         'server/databases.html',
                         binds=BindContainer.BINDS,
                         host=host), 200)
+
+@blueprint.route('/servers/<string:host>/sql/')
+def server_view_sql(host):
+    return make_response(render_template(
+                        'server/sql.html',
+                        binds=BindContainer.BINDS,
+                        host=host), 200)
+
+@blueprint.route('/servers/<string:host>/users/')
+def server_view_users(host):
+    return make_response(render_template(
+                        'server/users.html',
+                        binds=BindContainer.BINDS,
+                        host=host), 200)
+
+@blueprint.route('/servers/<string:host>/export/')
+def server_view_export(host):
+    return make_response(render_template(
+                        'server/export.html',
+                        binds=BindContainer.BINDS,
+                        host=host), 200)
+
+@blueprint.route('/servers/<string:host>/import/')
+def server_view_import(host):
+    return make_response(render_template(
+                        'server/import.html',
+                        binds=BindContainer.BINDS,
+                        host=host), 200)
+
+@blueprint.route('/servers/<string:host>/operations/')
+def server_view_operations(host):
+    return make_response(render_template(
+                        'server/operations.html',
+                        binds=BindContainer.BINDS,
+                        host=host), 200)
+
+##############################
+########DATABASE ROUTE########
+##############################
+
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/')
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/structure/')
@@ -37,6 +81,49 @@ def database_view_structure(host, shortname):
                         binds=BindContainer.BINDS,
                         host=host), 200)
 
+@blueprint.route('/servers/<string:host>/databases/<string:shortname>/sql/')
+def database_view_sql(host, shortname):
+    connection, meta, _ = BindContainer.get(shortname)
+    return make_response(render_template(
+                        'database/sql.html',
+                        binds=BindContainer.BINDS,
+                        host=host), 200)
+
+@blueprint.route('/servers/<string:host>/databases/<string:shortname>/search/')
+def database_view_search(host, shortname):
+    connection, meta, _ = BindContainer.get(shortname)
+    return make_response(render_template(
+                        'database/search.html',
+                        binds=BindContainer.BINDS,
+                        host=host), 200)
+
+@blueprint.route('/servers/<string:host>/databases/<string:shortname>/import/')
+def database_view_import(host, shortname):
+    connection, meta, _ = BindContainer.get(shortname)
+    return make_response(render_template(
+                        'database/import.html',
+                        binds=BindContainer.BINDS,
+                        host=host), 200)
+
+@blueprint.route('/servers/<string:host>/databases/<string:shortname>/export/')
+def database_view_export(host, shortname):
+    connection, meta, _ = BindContainer.get(shortname)
+    return make_response(render_template(
+                        'database/export.html',
+                        binds=BindContainer.BINDS,
+                        host=host), 200)
+
+@blueprint.route('/servers/<string:host>/databases/<string:shortname>/operations/')
+def database_view_operations(host, shortname):
+    connection, meta, _ = BindContainer.get(shortname)
+    return make_response(render_template(
+                        'database/operations.html',
+                        binds=BindContainer.BINDS,
+                        host=host), 200)
+
+##############################
+##########TABLE ROUTE#########
+##############################
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/tables/<string:table_name>/')
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/tables/<string:table_name>/browse/')
@@ -67,7 +154,6 @@ def table_view_browse(host, shortname, table_name, offset=None, page=None):
     else:
         prev_ = page - 1
 
-    table_url = "/servers/{}/databases/{}/tables/{}".format(host, shortname, table_name)
     offset_ = (offset * page) - offset
     connection, meta, _ = BindContainer.get(shortname)
     table = meta.tables[table_name]
@@ -87,14 +173,63 @@ def table_view_browse(host, shortname, table_name, offset=None, page=None):
                         rows=rows,
                         types=types,
                         current_page=page,
-                        table_url=table_url,
                         offset=offset,
                         prev=prev_,
                         next=next_,
                         host=host), 200)
  
+@blueprint.route('/servers/<string:host>/databases/<string:shortname>/tables/<string:table_name>/structure/')
+def table_view_structure(host, shortname, table_name):
+    connection, meta, _ = BindContainer.get(shortname)
+    return make_response(render_template(
+                        'table/structure.html',
+                        binds=BindContainer.BINDS,
+                        host=host), 200)
 
-"""CONTEXT PROCESSORS"""   
+@blueprint.route('/servers/<string:host>/databases/<string:shortname>/tables/<string:table_name>/sql/')
+def table_view_sql(host, shortname, table_name):
+    connection, meta, _ = BindContainer.get(shortname)
+    return make_response(render_template(
+                        'table/sql.html',
+                        binds=BindContainer.BINDS,
+                        host=host), 200)
+
+@blueprint.route('/servers/<string:host>/databases/<string:shortname>/tables/<string:table_name>/search/')
+def table_view_search(host, shortname, table_name):
+    connection, meta, _ = BindContainer.get(shortname)
+    return make_response(render_template(
+                        'table/search.html',
+                        binds=BindContainer.BINDS,
+                        host=host), 200)
+
+@blueprint.route('/servers/<string:host>/databases/<string:shortname>/tables/<string:table_name>/add/')
+def table_view_add(host, shortname, table_name):
+    connection, meta, _ = BindContainer.get(shortname)
+    return make_response(render_template(
+                        'table/add.html',
+                        binds=BindContainer.BINDS,
+                        host=host), 200)
+
+@blueprint.route('/servers/<string:host>/databases/<string:shortname>/tables/<string:table_name>/import/')
+def table_view_import(host, shortname, table_name):
+    connection, meta, _ = BindContainer.get(shortname)
+    return make_response(render_template(
+                        'table/import.html',
+                        binds=BindContainer.BINDS,
+                        host=host), 200)
+
+@blueprint.route('/servers/<string:host>/databases/<string:shortname>/tables/<string:table_name>/export/')
+def table_view_export(host, shortname, table_name):
+    connection, meta, _ = BindContainer.get(shortname)
+    return make_response(render_template(
+                        'table/export.html',
+                        binds=BindContainer.BINDS,
+                        host=host), 200)
+
+
+##############################
+######CONTEXT PROCESSORS######
+############################## 
 
 @blueprint.context_processor
 def utility_processor():
@@ -111,6 +246,10 @@ def utility_processor():
     def databases(host):
         databases = DatabaseContainer.get_databases(host=host)
         return databases
+
+    def strreplace(from_, what, to):
+        return from_.replace(what, to)
+
     def generate_db_nav_items(active, url, type_):
         if type_ == "database":
             items = ["STRUCTURE", "SQL", "SEARCH", "EXPORT", "IMPORT", "OPERATIONS"]
@@ -127,7 +266,7 @@ def utility_processor():
                 ret += '<li class="nav-item active">'
             else:
                 ret += '<li class="nav-item">'
-            ret += '<a class="nav-link d_b" href="{}/{}/">'.format(url, item.lower())
+            ret += '<a class="nav-link d_b" href="{}{}/">'.format(url, item.lower())
             ret += '<i class="fa fa-{}" aria-hidden="true"></i>'.format(icons[i])
             ret += " "
             ret += item
@@ -139,9 +278,14 @@ def utility_processor():
                 get_table_names=get_table_names,
                 to_list=to_list,
                 generate_db_nav_items=generate_db_nav_items,
-                databases=databases)
+                databases=databases,
+                strreplace=strreplace)
 
 @blueprint.context_processor
 def hosts():
     hosts = DatabaseContainer.get_uniquehosts()
     return dict(hosts=hosts)
+
+@blueprint.context_processor
+def request_():
+    return dict(request=request)

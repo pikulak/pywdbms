@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block database_bar %}
+    {{ generate_db_nav_items("SQL", strreplace(request.path, '/sql', ''), "server")|safe }}
+{% endblock %}
+
+{% block results %}
+	<h2>server_SQL</h2>
+{% endblock %}

@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block database_bar %}
+    {{ generate_db_nav_items("USERS", strreplace(request.path, '/users', ''), "server")|safe }}
+{% endblock %}
+
+{% block results %}
+	<h2>server_USERS</h2>
+{% endblock %}

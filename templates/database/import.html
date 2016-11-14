@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block database_bar %}
+    {{ generate_db_nav_items("IMPORT", strreplace(request.path, "/import", ""), "database")|safe }}
+{% endblock %}
+
+{% block results %}
+	<h2>DB_IMPORT</h2>
+{% endblock %}

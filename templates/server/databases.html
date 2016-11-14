@@ -1,4 +1,8 @@
 {% extends 'base.html' %}
 {% block database_bar %}
-    {{ generate_db_nav_items("DATABASES", url, "server")|safe }}
+    {{ generate_db_nav_items("DATABASES", strreplace(request.path, '/databases', ''), "server")|safe }}
+{% endblock %}
+
+{% block results %}
+	<h2>server_DATABASES</h2>
 {% endblock %}

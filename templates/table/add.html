@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block database_bar %}
+    {{ generate_db_nav_items("ADD", strreplace(request.path, "/add", "") , "table")|safe }}
+{% endblock %}
+
+{% block results %}
+	<h2>TABLE_ADD</h2>
+{% endblock %}

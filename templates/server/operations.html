@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block database_bar %}
+    {{ generate_db_nav_items("OPERATIONS", strreplace(request.path, '/operations', ''), "server")|safe }}
+{% endblock %}
+
+{% block results %}
+	<h2>server_OPERATIONS</h2>
+{% endblock %}

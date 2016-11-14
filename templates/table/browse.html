@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block database_bar %}
-    {{ generate_db_nav_items("BROWSE", table_url, "table")|safe }}
+    {{ generate_db_nav_items("BROWSE", strreplace(request.path, "/browse", ""), "table")|safe }}
 {% endblock %}
 
 
