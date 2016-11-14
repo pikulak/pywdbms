@@ -17,30 +17,30 @@ default_offset = 25
 
 @blueprint.route('/')
 def dashboard():
-    resp = make_response(render_template('dashboard.html'), 200)
+    resp = make_response(render_template('dashboard/main.html'), 200)
     return resp
 
 @blueprint.route('/servers/<string:host>')
 @blueprint.route('/servers/<string:host>/databases')
-def server_view(host):
+def server_view_databases(host):
     return make_response(render_template(
-                        'server.html',
+                        'server/databases.html',
                         binds=BindContainer.BINDS,
                         host=host), 200)
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/')
-@blueprint.route('/servers/<string:host>/databases/<string:shortname>/browse/')
-def database_view(host, shortname):
+@blueprint.route('/servers/<string:host>/databases/<string:shortname>/structure/')
+def database_view_structure(host, shortname):
     connection, meta, _ = BindContainer.get(shortname)
     return make_response(render_template(
-                        'tables.html',
+                        'database/structure.html',
                         binds=BindContainer.BINDS,
                         host=host), 200)
 
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/tables/<string:table_name>/')
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/tables/<string:table_name>/browse/')
-def table_view(host, shortname, table_name, offset=None, page=None):
+def table_view_browse(host, shortname, table_name, offset=None, page=None):
     offset = request.args.get("offset")
     page = request.args.get("page")
 

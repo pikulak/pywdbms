@@ -1,0 +1,4 @@
+{% extends 'base.html' %}
+{% block database_bar %}
+    {{ generate_db_nav_items("DATABASES", url, "server")|safe }}
+{% endblock %}
