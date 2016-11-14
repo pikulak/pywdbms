@@ -17,6 +17,7 @@
         border-radius: 0px !important;
         word-wrap: break-word !important;
     }
+
     .middle {
         width: calc(100vw - 34px);
     }
@@ -159,6 +160,7 @@
         <div class="col-md-2 np">
             <div class="container-fluid np">
             {% block sidebar %}
+                {% set databases = databases(host) %}
                 {% for database in databases %}
                     {% set shortname = to_list(database.keys())[0] %}
                     {% set db_properties = to_list(database.values())[0] %}

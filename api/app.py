@@ -18,15 +18,21 @@ def dashboard():
     resp = make_response(render_template('dashboard.html'), 200)
     return resp
 
-@blueprint.route('/servers/<host>')
+@blueprint.route('/servers/<string:host>')
+@blueprint.route('/servers/<string:host>/databases')
 def server_view(host):
-    databases = DatabaseContainer.get_databases(host=host)
     return make_response(render_template(
                         'server.html',
-                        databases=databases, 
-                        binds=BindContainer.BINDS), 200)
+                        binds=BindContainer.BINDS,
+                        host=host), 200)
+@blueprint.route('/servers/<string:host>/databases/<string:shortname>/')
+@blueprint.route('/servers/<string:host>/databases/<string:shortname>/browse/')
+def database_view(host, shortname):
+    connection, meta, _ = BindContainer.get(shortname)
+
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/tables/<string:table_name>/')
+@blueprint.route('/servers/<string:host>/databases/<string:shortname>/tables/<string:table_name>/browse/')
 def table_view(host, shortname, table_name, offset=None, page=None):
     offset = request.args.get("offset")
     page = request.args.get("page")
@@ -56,7 +62,6 @@ def table_view(host, shortname, table_name, offset=None, page=None):
 
     table_url = "/servers/{}/databases/{}/tables/{}".format(host, shortname, table_name)
     offset_ = (offset * page) - offset
-    databases = DatabaseContainer.get_databases(host=host)
     connection, meta, _ = BindContainer.get(shortname)
     table = meta.tables[table_name]
     result = connection.execute(table.select().limit(offset).offset(offset_))
@@ -70,7 +75,6 @@ def table_view(host, shortname, table_name, offset=None, page=None):
 
     return make_response(render_template(
                         'table.html',
-                        databases=databases,
                         table_name=table_name,
                         keys=result.keys(),
                         rows=rows,
@@ -79,7 +83,8 @@ def table_view(host, shortname, table_name, offset=None, page=None):
                         table_url=table_url,
                         offset=offset,
                         prev=prev_,
-                        next=next_), 200)
+                        next=next_,
+                        host=host), 200)
  
 
 """CONTEXT PROCESSORS"""   
@@ -96,6 +101,9 @@ def utility_processor():
     def to_dict(input):
         return dict(input)
 
+    def databases(host):
+        databases = DatabaseContainer.get_databases(host=host)
+        return databases
     def generate_db_nav_items(active, url, type_):
         if type_ == "database":
             items = ["STRUCTURE", "SQL", "SEARCH", "EKSPORT", "IMPORT", "OPERATIONS"]
@@ -112,7 +120,7 @@ def utility_processor():
                 ret += '<li class="nav-item active">'
             else:
                 ret += '<li class="nav-item">'
-            ret += '<a class="nav-link d_b" href="{}">'.format(url)
+            ret += '<a class="nav-link d_b" href="{}/{}/">'.format(url, item.lower())
             ret += '<i class="fa fa-{}" aria-hidden="true"></i>'.format(icons[i])
             ret += " "
             ret += item
@@ -123,7 +131,8 @@ def utility_processor():
     return dict(to_dict=to_dict,
                 get_table_names=get_table_names,
                 to_list=to_list,
-                generate_db_nav_items=generate_db_nav_items)
+                generate_db_nav_items=generate_db_nav_items,
+                databases=databases)
 
 @blueprint.context_processor
 def hosts():
