@@ -70,6 +70,12 @@
     .bg-light-blue{
         background: #4285F4
     }
+    .bg-light-red{
+        background: #ff4444
+    }
+    .bg-light-green{
+        background: #00C851
+    }
     .white-color{
         color: white;
     }
@@ -164,17 +170,22 @@
                 {% for database in databases %}
                     {% set shortname = to_list(database.keys())[0] %}
                     {% set db_properties = to_list(database.values())[0] %}
-                <a href="/servers/{{ db_properties.host }}/databases/{{ shortname }}" class="db">
-                    <div class="col-md-12 bg-light-blue" style="padding:10px">
+                    {% if shortname in binds %}
+                        <a href="/servers/{{ db_properties.host }}/databases/{{ shortname }}" class="db">
+                        <div class="col-md-12 bg-light-green" style="padding:10px">
+                    {% else %}
+                        <a href="/servers/{{ db_properties.host }}/databases/{{ shortname }}/connect/" class="db">
+                        <div class="col-md-12 bg-light-red" style="padding:10px"> 
+                    {% endif %}
                         <i class="fa fa-database"></i>
                          {{ db_properties.database }}
                          ({{ shortname }})
                          as 
-                         <span class="hash-char">{{ db_properties.username }}</span>
+                         {{ db_properties.username }}
                     </div>
                 </a>
                 <div class="col-md-12 np">
-                    <ul class="list-group">
+                    <ul class="list-group nm">
                     {% for table_name in get_table_names(shortname) %}
                         <a href="/servers/{{ db_properties.host }}/databases/{{ shortname }}/tables/{{ table_name }}" class="list-group-item black-color">
                             <i class="fa fa-table"></i>

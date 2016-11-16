@@ -2,7 +2,7 @@
 import sys
 import os
 sys.path.insert(0, 'C:\\venvs\\flask')
-from flask import render_template, make_response, request, Blueprint
+from flask import render_template, make_response, request, Blueprint, redirect, url_for
 from pywdbms.db.file import load_databases_from_file as load
 from pywdbms.db.file import update_databases_to_file as update
 from pywdbms.db.containers import DatabaseContainer, BindContainer
@@ -121,6 +121,11 @@ def database_view_operations(host, shortname):
                         binds=BindContainer.BINDS,
                         host=host), 200)
 
+@blueprint.route('/servers/<string:host>/databases/<string:shortname>/connect/')
+def database_connect(host, shortname):
+    BindContainer.add(shortname)
+    return redirect(url_for('blueprint.database_view_structure', host=host, shortname=shortname))
+
 ##############################
 ##########TABLE ROUTE#########
 ##############################
@@ -234,7 +239,10 @@ def table_view_export(host, shortname, table_name):
 @blueprint.context_processor
 def utility_processor():
     def get_table_names(shortname):
-        _, meta, _useless = BindContainer.get(shortname)
+        try:
+            _, meta, _useless = BindContainer.get(shortname)
+        except KeyError:
+            return []
         return meta.sorted_tables
 
     def to_list(input):
@@ -285,6 +293,11 @@ def utility_processor():
 def hosts():
     hosts = DatabaseContainer.get_uniquehosts()
     return dict(hosts=hosts)
+
+@blueprint.context_processor
+def binds():
+    binds = BindContainer.get_all()
+    return dict(binds=binds)
 
 @blueprint.context_processor
 def request_():
