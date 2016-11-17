@@ -1,7 +1,6 @@
 #!c:/python34/python.exe
 import sys
 import os
-sys.path.insert(0, 'C:\\venvs\\flask')
 from flask import render_template, make_response, request, Blueprint, redirect, url_for, flash
 from sqlalchemy import select
 

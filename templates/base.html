@@ -208,7 +208,7 @@
                     {% set db_properties = to_list(database.values())[0] %}
                     {% if shortname in binds %}
                         <a href="/servers/{{ db_properties.host }}/databases/{{ shortname }}" class="db">
-                        <div class="col-md-11 bg-light-green" style="padding:5px">
+                        <div class="col-md-11 bg-light-green" style="padding:11.5px">
                             <i class="fa fa-database"></i>
                             {{ db_properties.database }}
                             ({{ shortname }})
@@ -216,12 +216,12 @@
                             {{ db_properties.username }}
                         </div></a>
                         <a href="/servers/{{ db_properties.host }}/databases/{{ shortname }}/disconnect/">
-                        <div class="col-md-1 bg-light-green" style="padding:5.5px">
+                        <div class="col-md-1 bg-light-green" style="padding:12px">
                             <i class="fa fa-sign-out white-color"></i>
                         </div></a>
                     {% else %}
                         <a href="/servers/{{ db_properties.host }}/databases/{{ shortname }}/connect/" class="db">
-                        <div class="col-md-12 bg-light-red" style="padding:5px"> 
+                        <div class="col-md-12 bg-light-red" style="padding:11.5px"> 
                             <i class="fa fa-database" style="line-height:20px"></i>
                             {{ db_properties.database }}
                             ({{ shortname }})
