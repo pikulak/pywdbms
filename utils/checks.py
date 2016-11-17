@@ -10,7 +10,7 @@ def check_connection(db_properties):
                    port=db_properties["port"],
                    database=db_properties["database"])
     try:
-    	create_engine(_url, encoding="utf8")
-    	return True
+      create_engine(_url, encoding="utf8")
+      return True
     except OperationalError:
-    	return False
+      return False
