@@ -5,6 +5,10 @@ Python-based Web Database Management System written in flask:
 * multiple database sessions
 * remember sessions
 
+Instalation:
+* go to api/run.py
+ * change sys.path.insert(0, 'C:\\venvs\\flask') to sys.path.insert(0, 'your superior folder for pywdbms')
+
 In progress:
 * 70% back-end
 * 30% front-end
