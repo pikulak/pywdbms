@@ -14,4 +14,4 @@ Changelog:
 * 2016-11-17
   * Manual testing (added another server for test multiple server sessions)
   * Added disconnect/connect
-  * Sidebar > now we can see if database is connected or not (by color) 
+  * Sidebar > now we can see if database is connected or not (by color) (look for https://github.com/pikulak/pywdbms/tree/master/screenshots)
