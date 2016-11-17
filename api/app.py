@@ -2,13 +2,15 @@
 import sys
 import os
 sys.path.insert(0, 'C:\\venvs\\flask')
-from flask import render_template, make_response, request, Blueprint, redirect, url_for
+from flask import render_template, make_response, request, Blueprint, redirect, url_for, flash
 from sqlalchemy import select
 
 from pywdbms.db.file import load_databases_from_file as load
 from pywdbms.db.file import update_databases_to_file as update
 from pywdbms.db.containers import DatabaseContainer, BindContainer
 from pywdbms.utils.decorators import require_database_connection
+from pywdbms.utils.checks import check_connection
+from pywdbms.api.forms import DatabaseAddForm
 
 
 
@@ -69,7 +71,6 @@ def server_view_operations(host):
                         binds=BindContainer.BINDS,
                         host=host), 200)
 
-
 ##############################
 ########DATABASE ROUTE########
 ##############################
@@ -129,6 +130,27 @@ def database_view_operations(host, shortname):
                         'database/operations.html',
                         binds=BindContainer.BINDS,
                         host=host), 200)
+
+@blueprint.route('/databases/add/', methods=["POST", "GET"])
+def database_add():
+    error = False
+    form = DatabaseAddForm(request.form)
+    if request.method == 'POST':
+        if form.validate():
+
+            if check_connection(form.data):
+                DatabaseContainer.add(form.data)
+            else:
+                error = "Unable connect to server. Maybe you provided bad data?"
+        else:
+            if len(form.shortname.errors) > 0:
+                error = "Shortname already exists. Please specify another one."
+            else:
+                error = "Please provide correct data."
+    return make_response(render_template(
+                        'database/add.html',
+                         form=form,
+                         error=error), 200)
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/connect/')
 def database_connect(host, shortname):
@@ -260,11 +282,12 @@ def table_view_export(host, shortname, table_name):
 @blueprint.context_processor
 def utility_processor():
     def get_table_names(shortname):
-        try:
-            _, meta, _useless = BindContainer.get(shortname)
-        except TypeError:
+        _temp = BindContainer.get(shortname)
+        if _temp:
+            # _temp[1] = meta
+            return _temp[1].sorted_tables
+        else:
             return []
-        return meta.sorted_tables
 
     def to_list(input):
         return list(input)

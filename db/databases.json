@@ -6,21 +6,5 @@
         "password": "test", 
         "port": 5432, 
         "username": "test"
-    },
-    "short_db_name2": {
-        "database": "test", 
-        "drivername": "postgresql+psycopg2", 
-        "host": "192.168.1.104", 
-        "password": "test", 
-        "port": 5432, 
-        "username": "test"
-    },
-    "localhost_db": {
-        "database": "local_db", 
-        "drivername": "postgresql+psycopg2", 
-        "host": "localhost", 
-        "password": "test", 
-        "port": 5432, 
-        "username": "test_2"
     }
 }

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block nav %}{% endblock %}
+{% block content %}
+<div class="container">
+	<br><br><br>
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+        	<form class="form-center" method="post">
+    			<h2>Add server</h2></br>
+    			<label>Host:</label>
+    			<input type="text"  name="host" class="form-control" placeholder="Server's IP address" maxlength="30" required autofocus></br>
+
+    			<label>Port:</label>
+    			<input type="text"  class="form-control" name="port" placeholder="Server's Port" maxlength="5" required></br>
+
+    			<button class="btn btn-lg btn-primary btn-block" type="submit">Add</button></form>
+        		<a href="/" style="text-decoration: none">Return</a></br>
+			</form>
+        </div>
+    </div>
+</div>
+{% endblock %}

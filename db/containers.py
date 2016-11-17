@@ -5,6 +5,26 @@ from sqlalchemy import create_engine
 from pywdbms.utils.custom_dict_filter import custom_dict_filter as c_d_f
 from pywdbms.db.statements import StatementsChooser
 
+class HostsContainer(object):
+    HOSTS = {}
+
+    @staticmethod
+    def add(host, port, drivername):
+        _HOSTS = getattr(HostsContainer, "HOSTS")
+        _HOSTS[host] = {drivername: port}
+        setattr(HostsContainer, "HOSTS", _HOSTS)
+
+    @staticmethod
+    def get(value):
+        try:
+            return getattr(HostsContainer, "HOSTS")[value]
+        except KeyError:
+            return False
+
+    @staticmethod
+    def get_all():
+        return getattr(HostsContainer, "HOSTS")
+
 class DatabaseContainer(object):
     DATABASES = {}
     UNIQUE_HOSTS = []
@@ -26,21 +46,25 @@ class DatabaseContainer(object):
 
     @staticmethod
     def get(shortname):
-        return getattr(DatabaseContainer, "DATABASES")[shortname]
+        try:
+            return getattr(DatabaseContainer, "DATABASES")[shortname]
+        except KeyError:
+            return False
 
     @staticmethod
-    def add(shortname, properties):
+    def add(properties):
         UNIQUE_HOSTS = getattr(DatabaseContainer, "UNIQUE_HOSTS")
         if properties["host"] not in UNIQUE_HOSTS:
             UNIQUE_HOSTS.append(properties["host"])
         _databases = getattr(DatabaseContainer, "DATABASES")
-        _databases[shortname] = properties
+        _databases[properties["shortname"]] = properties
         setattr(DatabaseContainer, "DATABASES", _databases)
 
     @staticmethod
     def load_databases(databases={}):
-        for shortname, properties in databases.items():
-            DatabaseContainer.add(shortname, properties)
+        for _, properties in databases.items():
+            properties["shortname"] = _
+            DatabaseContainer.add(properties)
 
 
 
