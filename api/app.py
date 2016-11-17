@@ -137,14 +137,17 @@ def database_add():
     form = DatabaseAddForm(request.form)
     if request.method == 'POST':
         if form.validate():
-
             if check_connection(form.data):
                 DatabaseContainer.add(form.data)
+                update()
+                return redirect(url_for("blueprint.dashboard"))
             else:
-                error = "Unable connect to server. Maybe you provided bad data?"
+                error = "Unable connect to database. Maybe you provided bad data?"
         else:
             if len(form.shortname.errors) > 0:
                 error = "Shortname already exists. Please specify another one."
+            if len(form.database.errors) > 0:
+                error = "Specifed database already exists."
             else:
                 error = "Please provide correct data."
     return make_response(render_template(

@@ -22,4 +22,10 @@ class DatabaseAddForm(Form):
         if DatabaseContainer.get(self.shortname.data):
             self.shortname.errors.append("Shortname exists")
             return False
+        if len(DatabaseContainer.get_databases(host=self.host.data,\
+                                               database=self.database.data,\
+                                               port=self.port.data)) > 0:
+            self.database.errors.append("Database exists")
+            return False
+
         return True
