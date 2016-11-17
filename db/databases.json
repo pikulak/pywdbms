@@ -14,5 +14,13 @@
         "password": "test", 
         "port": 5432, 
         "username": "test"
+    },
+    "localhost_db": {
+        "database": "local_db", 
+        "drivername": "postgresql+psycopg2", 
+        "host": "localhost", 
+        "password": "test", 
+        "port": 5432, 
+        "username": "test_2"
     }
 }

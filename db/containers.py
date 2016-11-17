@@ -77,7 +77,7 @@ class BindContainer(object):
     @staticmethod
     def delete(shortname):
         _BINDS = getattr(BindContainer, "BINDS")
-        _BINDS[shortname].close()
+        _BINDS[shortname][0].close()
         del _BINDS[shortname]
         setattr(BindContainer, "BINDS", _BINDS)
 

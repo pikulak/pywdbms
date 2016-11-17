@@ -67,6 +67,7 @@ def server_view_operations(host):
                         binds=BindContainer.BINDS,
                         host=host), 200)
 
+
 ##############################
 ########DATABASE ROUTE########
 ##############################
@@ -126,6 +127,10 @@ def database_connect(host, shortname):
     BindContainer.add(shortname)
     return redirect(url_for('blueprint.database_view_structure', host=host, shortname=shortname))
 
+@blueprint.route('/servers/<string:host>/databases/<string:shortname>/disconnect/')
+def database_disconnect(host, shortname):
+    BindContainer.delete(shortname)
+    return redirect(url_for('blueprint.server_view_databases', host=host))
 ##############################
 ##########TABLE ROUTE#########
 ##############################
@@ -291,7 +296,7 @@ def utility_processor():
 
 @blueprint.context_processor
 def hosts():
-    hosts = DatabaseContainer.get_uniquehosts()
+    hosts = sorted(DatabaseContainer.get_uniquehosts())
     return dict(hosts=hosts)
 
 @blueprint.context_processor

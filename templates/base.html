@@ -57,6 +57,12 @@
         padding: 12px !important;
         font-size: 12px !important;
     }
+    .f-l{
+        float:left;
+    }
+    .f-r{
+        float:right;
+    }
     .lp-i{
         padding: 3px !important;
     }
@@ -148,16 +154,35 @@
     <div class="container-fluid np nav-container">
         <nav class="navbar navbar-light bg-dark-blue nm np">
             <a class="navbar-brand white-color" href="/">pyWDBMS</a>
+            <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                {% for host in hosts %}
+                {% for host_ in hosts %}
+                {% if host_ == host %}
                 <li class="nav-item active">
                     <a class="nav-link" href="/servers/{{host}}">
                         <i class="fa fa-server"></i>
                          {{host}}
                     </a>
                 </li>
-                {% endfor %}
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/servers/{{host_}}">
+                        <i class="fa fa-server"></i>
+                         {{host_}}
+                    </a>
+                </li>    
+                {% endif %}    
+                {% endfor %}             
             </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="nav-item">
+                    <a class="nav-link" href="/servers/add">
+                        <i class="fa fa-plus"></i>
+                         Add server
+                    </a>
+                </li>
+            </ul>
+            </div>
         </nav>
     </div>
 {% endblock %}
