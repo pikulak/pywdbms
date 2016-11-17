@@ -9,3 +9,8 @@ In progress:
 * 70% back-end
 * 30% front-end
 * 0% security tweaks
+# Changelog
+*2016-11-17
+  Manual testing (added another server for test multiple server sessions)
+  Added disconnect/connect
+  Sidebar > now we can see if database is connected or not (by color) 
