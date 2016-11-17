@@ -15,10 +15,8 @@ Changelog:
   * Manual testing (added another server for test multiple server sessions)
   * Added disconnect/connect
   * Sidebar > now we can see if database is connected or not (by color) (https://github.com/pikulak/pywdbms/tree/master/screenshots)
-
+  * require_database_connection DECORATOR
 TODO:
 * views and mechanics for all sections(server, database, table)
 * add server form
 
-DONE:
-* require_database_connection decorator
