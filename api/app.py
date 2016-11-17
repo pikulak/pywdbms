@@ -11,7 +11,6 @@ from sqlalchemy import select
 
 blueprint = Blueprint('blueprint', __name__, template_folder="../templates")
 load()
-BindContainer.add("short_db_name")
 default_offset = 25
 
 
@@ -257,7 +256,7 @@ def utility_processor():
         return dict(input)
 
     def databases(host):
-        databases = DatabaseContainer.get_databases(host=host)
+        databases = list(DatabaseContainer.get_databases(host=host))
         return databases
 
     def strreplace(from_, what, to):
