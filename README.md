@@ -19,4 +19,5 @@ Changelog:
 TODO:
 * views and mechanics for all sections(server, database, table)
 * add server form
-* if_connected decorator
+DONE:
+* require_database_connection decorator
