@@ -53,7 +53,10 @@ class BindContainer(object):
 
     @staticmethod
     def get(shortname):
-        return getattr(BindContainer, "BINDS")[shortname]
+        try:
+            return getattr(BindContainer, "BINDS")[shortname]
+        except KeyError:
+            return False
 
     @staticmethod
     def add(shortname):

@@ -3,10 +3,13 @@ import sys
 import os
 sys.path.insert(0, 'C:\\venvs\\flask')
 from flask import render_template, make_response, request, Blueprint, redirect, url_for
+from sqlalchemy import select
+
 from pywdbms.db.file import load_databases_from_file as load
 from pywdbms.db.file import update_databases_to_file as update
 from pywdbms.db.containers import DatabaseContainer, BindContainer
-from sqlalchemy import select
+from pywdbms.utils.decorators import require_database_connection
+
 
 
 blueprint = Blueprint('blueprint', __name__, template_folder="../templates")
@@ -74,6 +77,7 @@ def server_view_operations(host):
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/')
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/structure/')
+@require_database_connection
 def database_view_structure(host, shortname):
     connection, meta, _ = BindContainer.get(shortname)
     return make_response(render_template(
@@ -82,6 +86,7 @@ def database_view_structure(host, shortname):
                         host=host), 200)
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/sql/')
+@require_database_connection
 def database_view_sql(host, shortname):
     connection, meta, _ = BindContainer.get(shortname)
     return make_response(render_template(
@@ -90,6 +95,7 @@ def database_view_sql(host, shortname):
                         host=host), 200)
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/search/')
+@require_database_connection
 def database_view_search(host, shortname):
     connection, meta, _ = BindContainer.get(shortname)
     return make_response(render_template(
@@ -98,6 +104,7 @@ def database_view_search(host, shortname):
                         host=host), 200)
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/import/')
+@require_database_connection
 def database_view_import(host, shortname):
     connection, meta, _ = BindContainer.get(shortname)
     return make_response(render_template(
@@ -106,6 +113,7 @@ def database_view_import(host, shortname):
                         host=host), 200)
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/export/')
+@require_database_connection
 def database_view_export(host, shortname):
     connection, meta, _ = BindContainer.get(shortname)
     return make_response(render_template(
@@ -114,6 +122,7 @@ def database_view_export(host, shortname):
                         host=host), 200)
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/operations/')
+@require_database_connection
 def database_view_operations(host, shortname):
     connection, meta, _ = BindContainer.get(shortname)
     return make_response(render_template(
@@ -127,6 +136,7 @@ def database_connect(host, shortname):
     return redirect(url_for('blueprint.database_view_structure', host=host, shortname=shortname))
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/disconnect/')
+@require_database_connection
 def database_disconnect(host, shortname):
     BindContainer.delete(shortname)
     return redirect(url_for('blueprint.server_view_databases', host=host))
@@ -136,6 +146,7 @@ def database_disconnect(host, shortname):
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/tables/<string:table_name>/')
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/tables/<string:table_name>/browse/')
+@require_database_connection
 def table_view_browse(host, shortname, table_name, offset=None, page=None):
     offset = request.args.get("offset")
     page = request.args.get("page")
@@ -186,8 +197,9 @@ def table_view_browse(host, shortname, table_name, offset=None, page=None):
                         prev=prev_,
                         next=next_,
                         host=host), 200)
- 
+
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/tables/<string:table_name>/structure/')
+@require_database_connection
 def table_view_structure(host, shortname, table_name):
     connection, meta, _ = BindContainer.get(shortname)
     return make_response(render_template(
@@ -196,6 +208,7 @@ def table_view_structure(host, shortname, table_name):
                         host=host), 200)
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/tables/<string:table_name>/sql/')
+@require_database_connection
 def table_view_sql(host, shortname, table_name):
     connection, meta, _ = BindContainer.get(shortname)
     return make_response(render_template(
@@ -204,6 +217,7 @@ def table_view_sql(host, shortname, table_name):
                         host=host), 200)
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/tables/<string:table_name>/search/')
+@require_database_connection
 def table_view_search(host, shortname, table_name):
     connection, meta, _ = BindContainer.get(shortname)
     return make_response(render_template(
@@ -212,6 +226,7 @@ def table_view_search(host, shortname, table_name):
                         host=host), 200)
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/tables/<string:table_name>/add/')
+@require_database_connection
 def table_view_add(host, shortname, table_name):
     connection, meta, _ = BindContainer.get(shortname)
     return make_response(render_template(
@@ -220,6 +235,7 @@ def table_view_add(host, shortname, table_name):
                         host=host), 200)
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/tables/<string:table_name>/import/')
+@require_database_connection
 def table_view_import(host, shortname, table_name):
     connection, meta, _ = BindContainer.get(shortname)
     return make_response(render_template(
@@ -228,6 +244,7 @@ def table_view_import(host, shortname, table_name):
                         host=host), 200)
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/tables/<string:table_name>/export/')
+@require_database_connection
 def table_view_export(host, shortname, table_name):
     connection, meta, _ = BindContainer.get(shortname)
     return make_response(render_template(
@@ -245,7 +262,7 @@ def utility_processor():
     def get_table_names(shortname):
         try:
             _, meta, _useless = BindContainer.get(shortname)
-        except KeyError:
+        except TypeError:
             return []
         return meta.sorted_tables
 
