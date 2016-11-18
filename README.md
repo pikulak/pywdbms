@@ -8,11 +8,12 @@ Python-based Web Database Management System written in flask:
 Instalation:
 * go to api/run.py
  * change sys.path.insert(0, 'C:\\venvs\\flask') to sys.path.insert(0, 'your superior folder for pywdbms')
+ * change or delete shebang (i have to do this due to my setup)
 
 In progress:
 * 70% back-end
 * 30% front-end
-* 0% security tweaks
+* 20% security tweaks
 
 Changelog:
 * 2016-11-17
