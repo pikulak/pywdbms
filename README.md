@@ -22,7 +22,8 @@ Changelog:
   * Sidebar > now we can see if database is connected or not (by color) (https://github.com/pikulak/pywdbms/tree/master/screenshots)
   * Added: require_database_connection DECORATOR
   * Added: database add form + validation and connection checks
-
+* 2016-11-18
+ * tweaks (deleted unused lines)
 TODO:
 * views and mechanics for all sections(server, database, table)
 
