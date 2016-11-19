@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+
+{% block results %}
+	<h3 class="red-color"> Can't connect to database </h3>
+	Do you want try again?
+	<a href="{{url}}?next={{request.path}}">Connect</a>
+{% endblock %}

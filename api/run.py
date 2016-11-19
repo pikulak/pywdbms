@@ -14,4 +14,5 @@ from pywdbms.api.app import blueprint
 app = Flask(__name__)
 app.secret_key = 'some_secret'
 app.register_blueprint(blueprint)
+app.config['DEBUG'] = True
 app.run()

@@ -3,6 +3,7 @@ import os
 from flask import render_template, make_response, request, Blueprint, redirect, url_for, flash
 from sqlalchemy import select
 from collections import defaultdict
+from sqlalchemy.exc import OperationalError
 from pywdbms.db.file import load_databases_from_file as load
 from pywdbms.db.file import update_databases_to_file as update
 from pywdbms.db.containers import DatabaseContainer, BindContainer
@@ -152,8 +153,15 @@ def database_add():
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/connect/')
 def database_connect(host, shortname):
-    BindContainer.add(shortname)
-    return redirect(url_for('blueprint.database_view_structure', host=host, shortname=shortname))
+    try:
+        BindContainer.add(shortname)
+    except OperationalError:
+        pass
+    if request.args.get("next") != None:
+        print(request.args.get("next"))
+        return redirect(request.args.get("next"))
+    return redirect(url_for('blueprint.database_view_structure', host=host,
+                                                                shortname=shortname))
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/disconnect/')
 @require_database_connection
