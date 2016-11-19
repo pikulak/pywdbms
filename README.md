@@ -24,6 +24,7 @@ Changelog:
   * Added: database add form + validation and connection checks
 * 2016-11-18
  * tweaks (deleted unused lines)
+ 
 TODO:
 * views and mechanics for all sections(server, database, table)
 
