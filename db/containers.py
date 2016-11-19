@@ -1,4 +1,3 @@
-#!c:/python34/python.exe
 from sqlalchemy.engine import url
 from sqlalchemy.schema import MetaData
 from sqlalchemy import create_engine
