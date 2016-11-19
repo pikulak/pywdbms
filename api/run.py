@@ -7,7 +7,7 @@ try:
 except ImportError:
 	import os
 	p = os.path.dirname(os.path.join(os.path.realpath(__file__), "../../../"))
-	
+
 sys.path.insert(0, p)
 from flask import Flask
 from pywdbms.api.app import blueprint
