@@ -1,4 +1,3 @@
-#!c:/python34/python.exe
 import os
 import json
 import codecs
