@@ -259,8 +259,8 @@
             </div>
             <div class="container-fluid np nm database-content">
                 <div class="container-fluid">
-                {% if error %}
-                    <h3 class="red-color">{{ error  }}
+                {% if connection_error %}
+                    <h3 class="red-color">{{ connection_error }}</h3>
                 {% else %}
                     {% block results %} {% endblock %}
                 {% endif %}

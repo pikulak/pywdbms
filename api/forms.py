@@ -1,5 +1,8 @@
 from wtforms import Form, StringField, PasswordField, IntegerField, SelectField, validators
+from wtforms.widgets import TextArea
 from pywdbms.db.containers import DatabaseContainer
+
+
 class DatabaseAddForm(Form):
     shortname = StringField('shortname', [validators.Length(min=4, max=20), validators.required()])
     host = StringField('host', [validators.Length(min=4, max=30), validators.required()])
@@ -27,5 +30,7 @@ class DatabaseAddForm(Form):
                                                port=self.port.data)) > 0:
             self.database.errors.append("Database exists")
             return False
-
         return True
+
+class SqlForm(Form):
+    stmt = StringField('stmt', [validators.required()], widget=TextArea())

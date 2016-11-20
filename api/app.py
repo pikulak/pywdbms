@@ -10,7 +10,7 @@ from pywdbms.db.file import update_databases_to_file as update
 from pywdbms.db.containers import DatabaseContainer, BindContainer
 from pywdbms.utils.decorators import require_database_connection
 from pywdbms.utils.checks import check_connection
-from pywdbms.api.forms import DatabaseAddForm
+from pywdbms.api.forms import DatabaseAddForm, SqlForm
 from pywdbms.api.settings import DEFAULT_OFFSET, SUPPORTED_DRIVERS
 from pywdbms.db.statements import StatementsChooser
 
@@ -115,13 +115,31 @@ def database_view_structure(host, shortname):
                         'database/structure.html',
                         host=host), 200)
 
-@blueprint.route('/servers/<string:host>/databases/<string:shortname>/sql/')
+@blueprint.route('/servers/<string:host>/databases/<string:shortname>/sql/', methods=["POST", "GET"])
 @require_database_connection
 def database_view_sql(host, shortname):
     connection, meta, _ = BindContainer.get(shortname)
+    form = SqlForm(request.form)
+    result = False
+    error = False
+    if request.method == 'POST':
+        if form.validate():
+            stmt = form.data["stmt"]
+            try:
+                result_ = connection.execute(stmt)
+                result = {}
+                result["labels"] = result_.keys()
+                result["query_result"] = result_.fetchall()
+            except Exception as e:
+                error = e
+        else:
+            error = "Can't validate form."
     return make_response(render_template(
                         'database/sql.html',
-                        host=host), 200)
+                        host=host,
+                        result=result,
+                        form=form,
+                        error=error), 200)
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/search/')
 @require_database_connection
@@ -262,13 +280,10 @@ def table_view_structure(host, shortname, table_name):
                         'table/structure.html',
                         host=host), 200)
 
-@blueprint.route('/servers/<string:host>/databases/<string:shortname>/tables/<string:table_name>/sql/')
+@blueprint.route('/servers/<string:host>/databases/<string:shortname>/tables/<string:table_name>/sql/', methods=["POST", "GET"])
 @require_database_connection
 def table_view_sql(host, shortname, table_name):
-    connection, meta, _ = BindContainer.get(shortname)
-    return make_response(render_template(
-                        'table/sql.html',
-                        host=host), 200)
+    return database_view_sql(host=host, shortname=shortname)
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/tables/<string:table_name>/search/')
 @require_database_connection
