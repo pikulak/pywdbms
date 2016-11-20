@@ -24,23 +24,24 @@ def dashboard():
 ##############################
 ########SERVER ROUTE##########
 ##############################
-
 @blueprint.route('/servers/<string:host>/')
 @blueprint.route('/servers/<string:host>/info/')
 def server_view_info(host):
+    return make_response(render_template(
+                        'server/info.html',
+                        host=host), 200)
+
+
+@blueprint.route('/servers/<string:host>/databases/')
+def server_view_databases(host):
     sorted_by_drivers = {}
+    versions = {}
     for _driver in SUPPORTED_DRIVERS:
         sorted_by_drivers[_driver] = (DatabaseContainer.get_databases(host=host,
                                                        drivername=_driver))
     return make_response(render_template(
-                        'server/info.html',
-                        sorted_by_drivers=sorted_by_drivers,
-                        host=host), 200)
-
-@blueprint.route('/servers/<string:host>/databases/')
-def server_view_databases(host):
-    return make_response(render_template(
                         'server/databases.html',
+                        sorted_by_drivers=sorted_by_drivers,
                         host=host), 200)
 
 @blueprint.route('/servers/<string:host>/sql/')

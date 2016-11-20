@@ -4,5 +4,30 @@
 {% endblock %}
 
 {% block results %}
-	<h2>server_DATABASES</h2>
+	{% for drivername, databases in sorted_by_drivers.items() %}
+		<h3 class="green-color">{{ drivername }}</h3>
+		<table class="table table-bordered table-hover table-responsive">
+			<tr>
+				<th>shortname</th>
+				<th>database</th>
+				<th>port</th>
+				<th>username</th>
+			</tr>
+			{% for database in databases %}
+				
+				{% for shortname, properties in database.items() %}
+					{% set url = url_for('blueprint.database_view_structure',
+									 host=properties['host'],
+									 shortname=shortname) %}
+									 
+					<tr onclick="window.location ='{{ url }}'">
+						<td>{{ shortname }}</td>
+						<td>{{ properties["database"] }}</td>
+						<td>{{ properties["port"] }}</td>
+						<td>{{ properties["username"] }}</td>
+					</tr>
+				{% endfor %}
+			{% endfor %}
+		</table>
+	{% endfor %}
 {% endblock %}
