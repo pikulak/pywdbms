@@ -14,7 +14,6 @@
 				<th>username</th>
 			</tr>
 			{% for database in databases %}
-				
 				{% for shortname, properties in database.items() %}
 					{% set url = url_for('blueprint.database_view_structure',
 									 host=properties['host'],

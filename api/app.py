@@ -4,6 +4,7 @@ from flask import render_template, make_response, request, Blueprint, redirect, 
 from sqlalchemy import select
 from collections import defaultdict
 from sqlalchemy.exc import OperationalError
+
 from pywdbms.db.file import load_databases_from_file as load
 from pywdbms.db.file import update_databases_to_file as update
 from pywdbms.db.containers import DatabaseContainer, BindContainer
@@ -11,6 +12,7 @@ from pywdbms.utils.decorators import require_database_connection
 from pywdbms.utils.checks import check_connection
 from pywdbms.api.forms import DatabaseAddForm
 from pywdbms.api.settings import DEFAULT_OFFSET, SUPPORTED_DRIVERS
+from pywdbms.db.statements import StatementsChooser
 
 blueprint = Blueprint('blueprint', __name__, template_folder="../templates")
 load()
@@ -36,9 +38,10 @@ def server_view_info(host):
 def server_view_databases(host):
     sorted_by_drivers = {}
     versions = {}
+
     for _driver in SUPPORTED_DRIVERS:
         sorted_by_drivers[_driver] = (DatabaseContainer.get_databases(host=host,
-                                                       drivername=_driver))
+                                                                      drivername=_driver))
     return make_response(render_template(
                         'server/databases.html',
                         sorted_by_drivers=sorted_by_drivers,
@@ -52,9 +55,33 @@ def server_view_sql(host):
 
 @blueprint.route('/servers/<string:host>/users/')
 def server_view_users(host):
+    sorted_by_drivers = {}
+    users = {}
+    headers = {}
+    _BINDS = BindContainer.get_all()
+
+    for _driver in SUPPORTED_DRIVERS:
+        sorted_by_drivers[_driver] = (DatabaseContainer.get_databases(host=host,
+                                                                      drivername=_driver))
+        for drivername, databases in sorted_by_drivers.items():
+            for database in databases:
+                for shortname, db_properties in database.items():
+                    if shortname in _BINDS:
+                        connection = _BINDS[shortname][0] #connection
+                        stmt = StatementsChooser.for_[drivername].get_server_users()
+                        result = connection.execute(stmt)
+                        headers[drivername] = result.keys()
+                        users[drivername] = result.fetchall()
+                        break
+                else:
+                    continue
+                break
+
     return make_response(render_template(
                         'server/users.html',
-                        host=host), 200)
+                        host=host,
+                        headers=headers,
+                        users=users), 200)
 
 @blueprint.route('/servers/<string:host>/export/')
 def server_view_export(host):
@@ -308,8 +335,8 @@ def utility_processor():
             items = ["STRUCTURE", "SQL", "SEARCH", "EXPORT", "IMPORT", "OPERATIONS"]
             icons = ["columns", "magic", "search", "download", "upload", "cogs"]
         if type_ == "server":
-            items = ["INFO", "DATABASES", "SQL", "USERS", "EXPORT", "IMPORT", "OPERATIONS"]
-            icons = ["info", "database", "magic", "user", "download", "upload", "cogs"]
+            items = ["INFO", "DATABASES", "USERS", "EXPORT", "IMPORT", "OPERATIONS"]
+            icons = ["info", "database", "user", "download", "upload", "cogs"]
         if type_ == "table":
             items = ["BROWSE", "STRUCTURE", "SQL", "SEARCH", "ADD", "EXPORT", "IMPORT"]
             icons = ["table", "columns", "magic", "search", "plus", "download", "upload"]
