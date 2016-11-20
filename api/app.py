@@ -280,11 +280,6 @@ def table_view_structure(host, shortname, table_name):
                         'table/structure.html',
                         host=host), 200)
 
-@blueprint.route('/servers/<string:host>/databases/<string:shortname>/tables/<string:table_name>/sql/', methods=["POST", "GET"])
-@require_database_connection
-def table_view_sql(host, shortname, table_name):
-    return database_view_sql(host=host, shortname=shortname)
-
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/tables/<string:table_name>/search/')
 @require_database_connection
 def table_view_search(host, shortname, table_name):
@@ -353,8 +348,8 @@ def utility_processor():
             items = ["INFO", "DATABASES", "USERS", "EXPORT", "IMPORT", "OPERATIONS"]
             icons = ["info", "database", "user", "download", "upload", "cogs"]
         if type_ == "table":
-            items = ["BROWSE", "STRUCTURE", "SQL", "SEARCH", "ADD", "EXPORT", "IMPORT"]
-            icons = ["table", "columns", "magic", "search", "plus", "download", "upload"]
+            items = ["BROWSE", "STRUCTURE", "SEARCH", "ADD", "EXPORT", "IMPORT"]
+            icons = ["table", "columns", "search", "plus", "download", "upload"]
         ret = ""
         for i, item in enumerate(items):
             if item == active:

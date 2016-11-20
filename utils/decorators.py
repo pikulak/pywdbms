@@ -7,7 +7,7 @@ from pywdbms.utils.checks import check_connection
 
 def require_database_connection(f):
     @wraps(f)
-    def decorated_function(host, shortname, table_name=None):
+    def decorated_function(host, shortname, table_name=None, section=None):
         if BindContainer.get(shortname):
 
             if not check_connection(DatabaseContainer.get(shortname)):
