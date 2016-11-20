@@ -4,21 +4,21 @@
 {% endblock %}
 
 {% block results %}
-	{% for drivername, labels in headers.items() %}
-		<h3 class="green-color">{{ drivername }}</h3>
-		<table class="table table-bordered table-hover table-responsive">
-			<tr>
-			{% for label in labels %}
-				<th>{{ label }}</th>
-			{% endfor %}
-			</tr>
-			{% for user in users[drivername] %}
-			<tr>
-				{% for cell in user %}
-					<td>{{ cell }}</td>
-				{% endfor %}
-			</tr>
-			{% endfor %}
-		</table>
-	{% endfor %}
+    {% for drivername, labels in headers.items() %}
+        <h3 class="green-color">{{ drivername }}</h3>
+        <table class="table table-bordered table-hover table-responsive">
+            <tr>
+            {% for label in labels %}
+                <th>{{ label }}</th>
+            {% endfor %}
+            </tr>
+            {% for user in users[drivername] %}
+            <tr>
+                {% for cell in user %}
+                    <td>{{ cell }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+    {% endfor %}
 {% endblock %}

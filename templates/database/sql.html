@@ -7,31 +7,31 @@
 <div class="container-fluid">
     <div class="row">
         <form class="form-center" method="post">
-    			<h2>Run SQL</h2></br>
+                <h2>Run SQL</h2></br>
                 <label>Shortname:</label>
                 {{ form.stmt(rows="10", class="form-control", placeholder="SELECT etc.") }}
                 </br>
-    			<button class="btn btn-lg bg-light-blue white-color btn-block btn-add" type="submit">Run</button></br>
-    			{% if error %}
-    				<h5 class="red-color"> {{ error }}</h5>
-    			{% endif %}
-    			{% if result %}
-    			<table class="table table-bordered table-hover table-responsive table-condensed">
-    				<tr>
-    					{% for label in result["labels"] %}
-    						<th>{{ label }}</th>
-    					{% endfor %}
-    				</tr>
-    				{% for row in result["query_result"] %}
-    					<tr>
-    						{% for cell in row %}
-    							<td> {{ cell }}</td>
-    						{% endfor %}
-    					</tr>
-    				{% endfor %}
-    			</table>
-    			{% endif %}
-		</form>
+                <button class="btn btn-lg bg-light-blue white-color btn-block btn-add" type="submit">Run</button></br>
+                {% if error %}
+                    <h5 class="red-color"> {{ error }}</h5>
+                {% endif %}
+                {% if result %}
+                <table class="table table-bordered table-hover table-responsive table-condensed">
+                    <tr>
+                        {% for label in result["labels"] %}
+                            <th>{{ label }}</th>
+                        {% endfor %}
+                    </tr>
+                    {% for row in result["query_result"] %}
+                        <tr>
+                            {% for cell in row %}
+                                <td> {{ cell }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </table>
+                {% endif %}
+        </form>
         </div>
     </div>
 </div>
