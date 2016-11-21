@@ -8,12 +8,11 @@ from sqlalchemy.exc import OperationalError
 from pywdbms.db.file import load_databases_from_file as load
 from pywdbms.db.file import update_databases_to_file as update
 from pywdbms.db.containers import DatabaseContainer, BindContainer
-from pywdbms.utils.decorators import require_database_connection
+from pywdbms.utils.decorators import require_database_connection, require_host_or_404
 from pywdbms.utils.checks import check_connection
 from pywdbms.api.forms import DatabaseAddForm, SqlForm
-from pywdbms.api.settings import DEFAULT_OFFSET, SUPPORTED_DRIVERS
+from pywdbms.api.settings import DEFAULT_OFFSET, SUPPORTED_DRIVERS, COMMANDS
 from pywdbms.db.statements import StatementsChooser
-
 blueprint = Blueprint('blueprint', __name__, template_folder="../templates")
 load()
 
@@ -28,6 +27,7 @@ def dashboard():
 ##############################
 @blueprint.route('/servers/<string:host>/')
 @blueprint.route('/servers/<string:host>/info/')
+@require_host_or_404
 def server_view_info(host):
     return make_response(render_template(
                         'server/info.html',
@@ -35,6 +35,7 @@ def server_view_info(host):
 
 
 @blueprint.route('/servers/<string:host>/databases/')
+@require_host_or_404
 def server_view_databases(host):
     sorted_by_drivers = {}
     versions = {}
@@ -47,13 +48,9 @@ def server_view_databases(host):
                         sorted_by_drivers=sorted_by_drivers,
                         host=host), 200)
 
-@blueprint.route('/servers/<string:host>/sql/')
-def server_view_sql(host):
-    return make_response(render_template(
-                        'server/sql.html',
-                        host=host), 200)
 
 @blueprint.route('/servers/<string:host>/users/')
+@require_host_or_404
 def server_view_users(host):
     sorted_by_drivers = {}
     users = {}
@@ -84,19 +81,25 @@ def server_view_users(host):
                         users=users), 200)
 
 @blueprint.route('/servers/<string:host>/export/')
+@require_host_or_404
 def server_view_export(host):
     return make_response(render_template(
                         'server/export.html',
                         host=host), 200)
 
 @blueprint.route('/servers/<string:host>/import/')
+@require_host_or_404
 def server_view_import(host):
     return make_response(render_template(
                         'server/import.html',
                         host=host), 200)
 
 @blueprint.route('/servers/<string:host>/operations/')
+@require_host_or_404
 def server_view_operations(host):
+    c = request.args.get("c")
+    if c is not None:
+        COMMANDS[c](host)
     return make_response(render_template(
                         'server/operations.html',
                         host=host), 200)
@@ -108,6 +111,7 @@ def server_view_operations(host):
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/')
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/structure/')
+@require_host_or_404
 @require_database_connection
 def database_view_structure(host, shortname):
     connection, meta, _ = BindContainer.get(shortname)
@@ -117,6 +121,7 @@ def database_view_structure(host, shortname):
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/sql/', methods=["POST", "GET"])
 @require_database_connection
+@require_host_or_404
 def database_view_sql(host, shortname):
     connection, meta, _ = BindContainer.get(shortname)
     form = SqlForm(request.form)
@@ -143,6 +148,7 @@ def database_view_sql(host, shortname):
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/search/')
 @require_database_connection
+@require_host_or_404
 def database_view_search(host, shortname):
     connection, meta, _ = BindContainer.get(shortname)
     return make_response(render_template(
@@ -151,6 +157,7 @@ def database_view_search(host, shortname):
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/import/')
 @require_database_connection
+@require_host_or_404
 def database_view_import(host, shortname):
     connection, meta, _ = BindContainer.get(shortname)
     return make_response(render_template(
@@ -159,6 +166,7 @@ def database_view_import(host, shortname):
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/export/')
 @require_database_connection
+@require_host_or_404
 def database_view_export(host, shortname):
     connection, meta, _ = BindContainer.get(shortname)
     return make_response(render_template(
@@ -198,6 +206,7 @@ def database_add():
                          error=error), 200)
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/connect/')
+@require_host_or_404
 def database_connect(host, shortname):
     try:
         BindContainer.add(shortname)
@@ -210,9 +219,10 @@ def database_connect(host, shortname):
                                                                 shortname=shortname))
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/disconnect/')
+@require_host_or_404
 @require_database_connection
 def database_disconnect(host, shortname):
-    BindContainer.delete(shortname)
+    BindContainer.delete([shortname])
     return redirect(url_for('blueprint.server_view_info', host=host))
 ##############################
 ##########TABLE ROUTE#########
@@ -220,6 +230,7 @@ def database_disconnect(host, shortname):
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/tables/<string:table_name>/')
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/tables/<string:table_name>/browse/')
+@require_host_or_404
 @require_database_connection
 def table_view_browse(host, shortname, table_name, offset=None, page=None):
     offset = request.args.get("offset")
@@ -273,6 +284,7 @@ def table_view_browse(host, shortname, table_name, offset=None, page=None):
                         host=host), 200)
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/tables/<string:table_name>/structure/')
+@require_host_or_404
 @require_database_connection
 def table_view_structure(host, shortname, table_name):
     connection, meta, _ = BindContainer.get(shortname)
@@ -281,6 +293,7 @@ def table_view_structure(host, shortname, table_name):
                         host=host), 200)
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/tables/<string:table_name>/search/')
+@require_host_or_404
 @require_database_connection
 def table_view_search(host, shortname, table_name):
     connection, meta, _ = BindContainer.get(shortname)
@@ -289,6 +302,7 @@ def table_view_search(host, shortname, table_name):
                         host=host), 200)
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/tables/<string:table_name>/add/')
+@require_host_or_404
 @require_database_connection
 def table_view_add(host, shortname, table_name):
     connection, meta, _ = BindContainer.get(shortname)
@@ -297,6 +311,7 @@ def table_view_add(host, shortname, table_name):
                         host=host), 200)
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/tables/<string:table_name>/import/')
+@require_host_or_404
 @require_database_connection
 def table_view_import(host, shortname, table_name):
     connection, meta, _ = BindContainer.get(shortname)
@@ -305,6 +320,7 @@ def table_view_import(host, shortname, table_name):
                         host=host), 200)
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/tables/<string:table_name>/export/')
+@require_host_or_404
 @require_database_connection
 def table_view_export(host, shortname, table_name):
     connection, meta, _ = BindContainer.get(shortname)

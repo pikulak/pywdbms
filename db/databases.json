@@ -1,20 +1,11 @@
 {
-    "local": {
-        "database": "local_db",
-        "drivername": "postgresql+psycopg2",
-        "host": "localhost",
-        "password": "test",
-        "port": 5432,
-        "shortname": "local",
-        "username": "test_2"
-    },
-    "short_db_name": {
+    "dsfsdf": {
         "database": "test",
         "drivername": "postgresql+psycopg2",
         "host": "192.168.1.104",
         "password": "test",
         "port": 5432,
-        "shortname": "short_db_name",
+        "shortname": "dsfsdf",
         "username": "test"
     }
 }

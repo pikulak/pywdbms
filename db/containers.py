@@ -60,6 +60,13 @@ class DatabaseContainer(object):
         setattr(DatabaseContainer, "DATABASES", _databases)
 
     @staticmethod
+    def delete(shortnames=[]):
+        _DATABASES = getattr(DatabaseContainer, "DATABASES")
+        for shortname in shortnames:
+            del _DATABASES[shortname]
+        setattr(DatabaseContainer, "DATABASES", _DATABASES)
+
+    @staticmethod
     def load_databases(databases={}):
         for _, properties in databases.items():
             properties["shortname"] = _
@@ -101,10 +108,14 @@ class BindContainer(object):
         setattr(BindContainer, "BINDS", _BINDS)
 
     @staticmethod
-    def delete(shortname):
+    def delete(shortnames):
         _BINDS = getattr(BindContainer, "BINDS")
-        _BINDS[shortname][0].close()
-        del _BINDS[shortname]
+        for shortname in shortnames:
+            try:
+                _BINDS[shortname][0].close() #connection
+                del _BINDS[shortname]
+            except KeyError:
+                pass
         setattr(BindContainer, "BINDS", _BINDS)
 
 
