@@ -6,5 +6,15 @@ def delete_server(host=""):
 	shortnames = [list(database.keys())[0] for database in databases]
 	DatabaseContainer.delete(shortnames)
 	BindContainer.delete(shortnames)
+	DatabaseContainer.UNIQUE_HOSTS.remove(host)
 	update()
 	return True
+
+def delete_database(shortname="", host=""):
+	DatabaseContainer.delete([shortname])
+	BindContainer.delete([shortname])
+	if len(DatabaseContainer.get_databases(host=host)) <= 0:
+		DatabaseContainer.UNIQUE_HOSTS.remove(host)
+		return True
+	update()
+	return False

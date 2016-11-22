@@ -8,6 +8,8 @@ from pywdbms.utils.checks import check_connection
 def require_database_connection(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
+        if not DatabaseContainer.get(kwargs["shortname"]):
+            abort(404)
         if BindContainer.get(kwargs["shortname"]):
 
             if not check_connection(DatabaseContainer.get(kwargs["shortname"])):

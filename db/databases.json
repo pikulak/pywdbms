@@ -1,11 +1,11 @@
 {
-    "dsfsdf": {
+    "dfdgdfg": {
         "database": "test",
         "drivername": "postgresql+psycopg2",
         "host": "192.168.1.104",
         "password": "test",
         "port": 5432,
-        "shortname": "dsfsdf",
+        "shortname": "dfdgdfg",
         "username": "test"
     }
 }

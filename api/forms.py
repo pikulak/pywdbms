@@ -25,6 +25,7 @@ class DatabaseAddForm(Form):
         if DatabaseContainer.get(self.shortname.data):
             self.shortname.errors.append("Shortname exists")
             return False
+
         if len(DatabaseContainer.get_databases(host=self.host.data,\
                                                database=self.database.data,\
                                                port=self.port.data)) > 0:
@@ -32,5 +33,16 @@ class DatabaseAddForm(Form):
             return False
         return True
 
+class DatabaseEditForm(DatabaseAddForm):
+    def validate(self):
+        rv = Form.validate(self)
+        if not rv:
+            return False
+
+        if DatabaseContainer.get(self.shortname.data):
+            self.shortname.errors.append("Shortname exists")
+            return False
+        return True
+        
 class SqlForm(Form):
     stmt = StringField('stmt', [validators.required()], widget=TextArea())

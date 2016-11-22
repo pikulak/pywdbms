@@ -4,5 +4,44 @@
 {% endblock %}
 
 {% block results %}
-	<h2>DB_OPERATIONS</h2>
+	<h2>Database operations</h2>
+	</br>
+	<div class="container-fluid">
+		<div class="col-md-4 np">
+			<h4>Delete database from pyWDBMS</h4>
+			<a href="{{ request.path }}?c=delete_database">
+				<button type="button" class="btn btn-danger">Delete</button>
+			</a>
+		</div>
+		<div class="col-md-4">
+			<form class="form-center" method="post">
+				<h3>Edit database connection</h3></br>
+                {% if error %}
+                    <h4 class="red-color"> {{ error }} </h4>
+                {% endif %}
+                <label>Shortname:</label>
+                {{ form.shortname(class="form-control", placeholder=act_db_properties["shortname"]) }}
+
+    			<label>Host:</label>
+                {{ form.host(class="form-control", placeholder=act_db_properties["host"]) }}
+
+    			<label>Port:</label>
+    			{{ form.port(class="form-control", placeholder=act_db_properties["port"]) }}
+
+                <label>Drivername:</label>
+                {{ form.drivername(class="form-control") }}
+
+                <label>Username:</label>
+                {{ form.username(class="form-control", placeholder=act_db_properties["username"]) }}
+
+                <label>Password:</label>
+                {{ form.password(class="form-control", placeholder="****") }}
+
+                <label>Database name:</label>
+                {{ form.database(class="form-control", placeholder=act_db_properties["database"]) }}
+                </br>
+    			<button class="btn btn-lg bg-light-blue white-color btn-block btn-add" type="submit">Edit</button>
+    		</form>
+		</div>
+	</div>
 {% endblock %}

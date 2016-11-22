@@ -10,7 +10,7 @@ from pywdbms.db.file import update_databases_to_file as update
 from pywdbms.db.containers import DatabaseContainer, BindContainer
 from pywdbms.utils.decorators import require_database_connection, require_host_or_404
 from pywdbms.utils.checks import check_connection
-from pywdbms.api.forms import DatabaseAddForm, SqlForm
+from pywdbms.api.forms import DatabaseAddForm, DatabaseEditForm, SqlForm
 from pywdbms.api.settings import DEFAULT_OFFSET, SUPPORTED_DRIVERS, COMMANDS
 from pywdbms.db.statements import StatementsChooser
 blueprint = Blueprint('blueprint', __name__, template_folder="../templates")
@@ -99,7 +99,9 @@ def server_view_import(host):
 def server_view_operations(host):
     c = request.args.get("c")
     if c is not None:
-        COMMANDS[c](host)
+        if COMMANDS[c](host):
+            return redirect('/')
+
     return make_response(render_template(
                         'server/operations.html',
                         host=host), 200)
@@ -147,8 +149,8 @@ def database_view_sql(host, shortname):
                         error=error), 200)
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/search/')
-@require_database_connection
 @require_host_or_404
+@require_database_connection
 def database_view_search(host, shortname):
     connection, meta, _ = BindContainer.get(shortname)
     return make_response(render_template(
@@ -156,8 +158,8 @@ def database_view_search(host, shortname):
                         host=host), 200)
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/import/')
-@require_database_connection
 @require_host_or_404
+@require_database_connection
 def database_view_import(host, shortname):
     connection, meta, _ = BindContainer.get(shortname)
     return make_response(render_template(
@@ -165,21 +167,54 @@ def database_view_import(host, shortname):
                         host=host), 200)
 
 @blueprint.route('/servers/<string:host>/databases/<string:shortname>/export/')
-@require_database_connection
 @require_host_or_404
+@require_database_connection
 def database_view_export(host, shortname):
     connection, meta, _ = BindContainer.get(shortname)
     return make_response(render_template(
                         'database/export.html',
                         host=host), 200)
 
-@blueprint.route('/servers/<string:host>/databases/<string:shortname>/operations/')
+@blueprint.route('/servers/<string:host>/databases/<string:shortname>/operations/', methods=["POST", "GET"])
+@require_host_or_404
 @require_database_connection
 def database_view_operations(host, shortname):
-    connection, meta, _ = BindContainer.get(shortname)
+    error = False
+    c = request.args.get("c")
+    act_db_properties = DatabaseContainer.get(shortname)
+    form = DatabaseEditForm(request.form)
+    if c is not None:
+        if COMMANDS[c](host=host, shortname=shortname):
+            return redirect(url_for("blueprint.server_view_databases", host=host))
+        else:
+            return redirect('/')
+    if request.method == 'POST':
+        if form.validate():
+            if check_connection(form.data):
+                DatabaseContainer.add(form.data)
+                DatabaseContainer.delete([shortname])
+                BindContainer.delete([shortname])
+                BindContainer.add(form.shortname.data)
+                update()
+                return redirect(url_for(
+                                "blueprint.database_view_operations",
+                                host=host,
+                                shortname=form.shortname.data))
+            else:
+                error = "Unable connect to database."
+        else:
+            if len(form.shortname.errors) > 0:
+                error = "Shortname already exists. Please specify another one."
+            if len(form.database.errors) > 0:
+                error = "Specifed database already exists."
+            else:
+                error = "Please provide correct data."
     return make_response(render_template(
                         'database/operations.html',
-                        host=host), 200)
+                        host=host,
+                        form=form,
+                        error=error,
+                        act_db_properties=act_db_properties), 200)
 
 @blueprint.route('/databases/add/', methods=["POST", "GET"])
 def database_add():
@@ -213,8 +248,8 @@ def database_connect(host, shortname):
     except OperationalError:
         pass
     if request.args.get("next") != None:
-        print(request.args.get("next"))
         return redirect(request.args.get("next"))
+
     return redirect(url_for('blueprint.database_view_structure', host=host,
                                                                 shortname=shortname))
 

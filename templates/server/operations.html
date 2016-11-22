@@ -4,5 +4,13 @@
 {% endblock %}
 
 {% block results %}
-	<h2>server_OPERATIONS</h2>
+	<h2>Server operations</h2>
+	</br>
+	<div class="container-fluid">
+		<h4>Delete server from pyWDBMS</h4>
+		<a href="{{ request.path }}?c=delete_server">
+			<button type="button" class="btn btn-danger">Delete</button>
+		</a>
+		
+	</div>
 {% endblock %}
